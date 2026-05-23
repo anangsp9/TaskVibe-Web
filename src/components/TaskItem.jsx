@@ -7,7 +7,7 @@ const categoryStyles = {
   General: "text-blue-700 bg-blue-100",
 };
 
-function TaskItem({ task, toggleTask }) {
+function TaskItem({ task, formatDueDate, toggleTask }) {
   const catStyle =
     categoryStyles[task.category] ||
     "text-indigo-700 bg-[#e2dfff]";
@@ -57,7 +57,7 @@ function TaskItem({ task, toggleTask }) {
             {task.dueDate && (
               <span className="text-xs text-gray-500 flex items-center gap-1">
                 <CalendarDays size={13} />
-                {task.dueDate}
+                {formatDueDate(task.dueDate)}
               </span>
             )}
 

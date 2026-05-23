@@ -59,6 +59,29 @@ function App() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const formatDueDate = (dateString) => {
+  if (!dateString) return "";
+
+  const today = new Date();
+  const target = new Date(dateString);
+
+  // reset jam agar perbandingan tanggal akurat
+  today.setHours(0, 0, 0, 0);
+  target.setHours(0, 0, 0, 0);
+
+  const diffTime = target - today;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Tomorrow";
+  if (diffDays === -1) return "Yesterday";
+
+  return target.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};
+
   return (
     <div className="flex min-h-screen bg-[#f9f9ff] overflow-x-hidden">
       <Sidebar />
@@ -72,9 +95,18 @@ function App() {
             <div className="flex items-end justify-between border-b border-gray-200 pb-3">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
-                  Today
+                  {new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                  })}
                 </h2>
-                <p className="text-base text-gray-400 mt-1">Wednesday, October 25</p>
+
+                <p className="text-base text-gray-400 mt-1">
+                  {new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
               </div>
               <div className="text-xs font-semibold text-indigo-700 bg-[#e2dfff] px-3 py-1 rounded-full">
                 {remaining} Task{remaining !== 1 ? "s" : ""} Left
@@ -84,7 +116,7 @@ function App() {
             {/* Task list */}
             <div className="flex flex-col gap-3">
               {tasks.map((task) => (
-                <TaskItem key={task.id} task={task} toggleTask={toggleTask} />
+                <TaskItem key={task.id} task={task} formatDueDate={formatDueDate} toggleTask={toggleTask} />
               ))}
 
               <QuickAdd addTask={addTask} />
