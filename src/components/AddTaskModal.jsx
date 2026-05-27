@@ -1,11 +1,31 @@
 import { X, CalendarDays, Clock3 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function AddTaskModal({ isOpen, onClose, onAddTask }) {
+function AddTaskModal({
+  isOpen,
+  onClose,
+  onAddTask,
+  editingTask,
+  onUpdateTask,
+}) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [time, setTime] = useState("");
+
+  useEffect(() => {
+    if (editingTask) {
+      setTitle(editingTask.title || "");
+      setCategory(editingTask.category || "");
+      setDueDate(editingTask.dueDate || "");
+      setTime(editingTask.time || "");
+    } else {
+      setTitle("");
+      setCategory("");
+      setDueDate("");
+      setTime("");
+    }
+  }, [editingTask, isOpen]);
 
   if (!isOpen) return null;
 
@@ -17,32 +37,33 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
       return;
     }
 
-    onAddTask({
+    const taskData = {
       title,
       category,
       dueDate,
       time,
-    });
+    };
 
-    // reset
-    setTitle("");
-    setCategory("");
-    setDueDate("");
-    setTime("");
+    if (editingTask) {
+      onUpdateTask({
+        ...editingTask,
+        ...taskData,
+      });
+    } else {
+      onAddTask(taskData);
+    }
 
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-
-      {/* Modal */}
       <div className="w-full max-w-[420px] overflow-hidden rounded-xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
           <h3 className="text-lg font-semibold text-gray-900">
-            Add New Task
+            {editingTask ? "Edit Task" : "Add New Task"}
           </h3>
 
           <button
@@ -55,7 +76,6 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-
           <div className="flex flex-col gap-4 px-5 py-5">
 
             {/* Task Name */}
@@ -137,7 +157,6 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
 
           {/* Footer */}
           <div className="flex justify-end gap-2 bg-[#f7f8ff] px-5 py-4">
-
             <button
               type="button"
               onClick={onClose}
@@ -150,7 +169,7 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
               type="submit"
               className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
             >
-              Add Task
+              {editingTask ? "Save Changes" : "Add Task"}
             </button>
           </div>
         </form>

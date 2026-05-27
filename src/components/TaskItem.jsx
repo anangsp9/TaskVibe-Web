@@ -1,4 +1,12 @@
-import { Check, Clock, CalendarDays } from "lucide-react";
+import {
+  Check,
+  Clock,
+  CalendarDays,
+  MoreVertical,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const categoryStyles = {
   Work: "text-indigo-700 bg-[#e2dfff]",
@@ -7,14 +15,37 @@ const categoryStyles = {
   General: "text-blue-700 bg-blue-100",
 };
 
-function TaskItem({ task, formatDueDate, toggleTask }) {
+function TaskItem({
+  task,
+  formatDueDate,
+  toggleTask,
+  onDelete,
+  onEdit,
+}) {
+  const [openMenu, setOpenMenu] = useState(false);
+  const menuRef = useRef(null);
+
   const catStyle =
     categoryStyles[task.category] ||
     "text-indigo-700 bg-[#e2dfff]";
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpenMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
-      className={`group bg-white rounded-2xl px-5 py-4 flex items-center justify-between border border-transparent hover:border-gray-200 hover:bg-[#fcfcff] transition-all duration-200 shadow-sm ${
+      className={`group bg-white rounded-2xl px-5 py-4 flex items-center justify-between border border-transparent hover:border-gray-200 hover:bg-[#fcfcff] transition-all duration-200 shadow-sm relative ${
         task.completed ? "opacity-50" : ""
       }`}
       style={{ boxShadow: "0 4px 12px rgba(70, 69, 85, 0.05)" }}
@@ -61,7 +92,7 @@ function TaskItem({ task, formatDueDate, toggleTask }) {
               </span>
             )}
 
-            {/* Optional Time */}
+            {/* Time */}
             {task.time && (
               <span className="text-xs text-red-500 flex items-center gap-1 font-medium">
                 <Clock size={13} />
@@ -70,6 +101,42 @@ function TaskItem({ task, formatDueDate, toggleTask }) {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Kebab Menu */}
+      <div className="relative ml-4" ref={menuRef}>
+        <button
+          onClick={() => setOpenMenu(!openMenu)}
+          className="p-2 rounded-lg hover:bg-gray-100 transition"
+        >
+          <MoreVertical size={18} className="text-gray-500" />
+        </button>
+
+        {openMenu && (
+          <div className="absolute right-0 top-11 w-40 rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden z-50">
+            <button
+              onClick={() => {
+                onEdit(task);
+                setOpenMenu(false);
+              }}
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition"
+            >
+              <Pencil size={16} />
+              Edit Task
+            </button>
+
+            <button
+              onClick={() => {
+                onDelete(task.id);
+                setOpenMenu(false);
+              }}
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition"
+            >
+              <Trash2 size={16} />
+              Delete Task
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

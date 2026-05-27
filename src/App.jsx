@@ -42,6 +42,11 @@ function App() {
     );
   };
 
+  const deleteTask = (id) => {
+  setTasks(tasks.filter((task) => task.id !== id));
+};
+
+
   const addTask = (taskData) => {
     const newTask = {
       id: Date.now(),
@@ -55,9 +60,22 @@ function App() {
     setTasks([newTask, ...tasks]);
   };
 
+  const updateTask = (updatedTask) => {
+  setTasks(
+    tasks.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task
+    )
+  );
+
+  setEditingTask(null);
+};
+
+
   const remaining = tasks.filter((t) => !t.completed).length;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [editingTask, setEditingTask] = useState(null);
 
   const formatDueDate = (dateString) => {
   if (!dateString) return "";
@@ -116,7 +134,18 @@ function App() {
             {/* Task list */}
             <div className="flex flex-col gap-3">
               {tasks.map((task) => (
-                <TaskItem key={task.id} task={task} formatDueDate={formatDueDate} toggleTask={toggleTask} />
+                <TaskItem
+  key={task.id}
+  task={task}
+  formatDueDate={formatDueDate}
+  toggleTask={toggleTask}
+  onDelete={deleteTask}
+  onEdit={(task) => {
+    setEditingTask(task);
+    setIsModalOpen(true);
+  }}
+/>
+
               ))}
 
               <QuickAdd addTask={addTask} />
@@ -140,9 +169,15 @@ function App() {
 
       <AddTaskModal
   isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
+  onClose={() => {
+    setIsModalOpen(false);
+    setEditingTask(null);
+  }}
   onAddTask={addTask}
+  editingTask={editingTask}
+  onUpdateTask={updateTask}
 />
+
 
     </div>
   );
