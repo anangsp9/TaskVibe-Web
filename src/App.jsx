@@ -25,16 +25,7 @@ const toggleTask = async (id) => {
     return;
   }
 
-  setTasks(
-    tasks.map((t) =>
-      t.id === id
-        ? {
-            ...t,
-            completed: !t.completed,
-          }
-        : t
-    )
-  );
+  await fetchTasks();
 };
 
 const deleteTask = async (id) => {
@@ -48,12 +39,12 @@ const deleteTask = async (id) => {
     return;
   }
 
-  setTasks(tasks.filter((task) => task.id !== id));
+  await fetchTasks();
 };
 
 
 const addTask = async (taskData) => {
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("tasks")
     .insert([
       {
@@ -63,26 +54,14 @@ const addTask = async (taskData) => {
         task_time: taskData.time || null,
         completed: false,
       },
-    ])
-    .select()
-    .single();
+    ]);
 
   if (error) {
     console.error(error);
     return;
   }
 
-  setTasks([
-    {
-      id: data.id,
-      title: data.title,
-      category: data.category,
-      dueDate: data.due_date,
-      time: data.task_time,
-      completed: data.completed,
-    },
-    ...tasks,
-  ]);
+  await fetchTasks();
 };
 
 const updateTask = async (updatedTask) => {
@@ -102,13 +81,7 @@ const updateTask = async (updatedTask) => {
     return;
   }
 
-  setTasks(
-    tasks.map((task) =>
-      task.id === updatedTask.id
-        ? updatedTask
-        : task
-    )
-  );
+  await fetchTasks();
 
   setEditingTask(null);
 };
@@ -148,10 +121,6 @@ const fetchTasks = async () => {
     .from("tasks")
     .select("*")
     .order("created_at", { ascending: false });
-
-    console.log("DATA:", data);
-  console.log("ERROR:", error);
-  console.log("JUMLAH DATA:", data?.length);
 
   if (!error) {
     const formattedTasks = data.map((task) => ({
