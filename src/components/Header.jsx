@@ -1,6 +1,6 @@
 import { Bell, Settings, Search, Plus } from "lucide-react";
 
-function Header({ onOpenModal }) {
+function Header({ onOpenModal, user }) {
   return (
     <header className="fixed top-0 left-0 md:left-64 right-0 z-40 flex justify-between items-center px-4 md:px-8 lg:px-10 h-16 bg-white border-b border-gray-200">
 
@@ -38,6 +38,10 @@ function Header({ onOpenModal }) {
         <button className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
           <Settings size={20} />
         </button>
+
+        <span className="hidden md:block text-sm font-medium text-gray-700">
+        {user?.email?.split("@")[0]}
+        </span>
 
         <img
           src="https://i.pravatar.cc/100"

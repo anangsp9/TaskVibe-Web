@@ -6,9 +6,12 @@ import Header from "./components/Header";
 import TaskItem from "./components/TaskItem";
 import QuickAdd from "./components/QuickAdd";
 import AddTaskModal from "./components/AddTaskModal";
+import Login from "./pages/Login";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [user, setUser] = useState(null);
+const [loading, setLoading] = useState(true);
 
 const toggleTask = async (id) => {
   const task = tasks.find((t) => t.id === id);
@@ -44,6 +47,11 @@ const deleteTask = async (id) => {
 
 
 const addTask = async (taskData) => {
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { error } = await supabase
     .from("tasks")
     .insert([
@@ -53,6 +61,8 @@ const addTask = async (taskData) => {
         due_date: taskData.dueDate || null,
         task_time: taskData.time || null,
         completed: false,
+
+        user_id: user.id,
       },
     ]);
 
@@ -117,9 +127,17 @@ const updateTask = async (updatedTask) => {
 };
 
 const fetchTasks = async () => {
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
   const { data, error } = await supabase
     .from("tasks")
     .select("*")
+    .eq("user_id", user.id)
     .order("completed", { ascending: true })
     .order("created_at", { ascending: false });
 
@@ -138,15 +156,61 @@ const fetchTasks = async () => {
 };
 
 useEffect(() => {
+  if (!user) return;
+
   fetchTasks();
+}, [user]);
+
+useEffect(() => {
+  const getUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    setUser(user);
+
+    setLoading(false);
+  };
+
+  getUser();
 }, []);
+
+useEffect(() => {
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange(
+  (_, session) => {
+    const currentUser = session?.user ?? null;
+
+    setUser(currentUser);
+
+    if (!currentUser) {
+      setTasks([]);
+    }
+  }
+);
+
+  return () => subscription.unsubscribe();
+}, []);
+
+if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#f9f9ff]">
+      <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-700 rounded-full animate-spin"></div>
+    </div>
+  );
+}
+
+if (!user) {
+  return <Login />;
+}
 
   return (
     <div className="flex min-h-screen bg-[#f9f9ff] overflow-x-hidden">
       <Sidebar />
 
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-[#f9f9ff]">
-        <Header onOpenModal={() => setIsModalOpen(true)} />
+        <Header onOpenModal={() => setIsModalOpen(true)} user={user} />
 
         <div className="flex-1 pt-24 px-4 md:px-10 pb-8 flex justify-center w-full">
           <div className="w-full max-w-[800px] flex flex-col gap-6">

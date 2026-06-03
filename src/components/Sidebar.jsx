@@ -7,7 +7,18 @@ import {
   LogOut,
 } from "lucide-react";
 
+import { supabase } from "../lib/supabase";
+
 function Sidebar() {
+
+    const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-[#f1f3ff] flex flex-col p-4 gap-y-2 shadow-sm z-50 hidden md:flex">
       <div className="mb-8 flex items-center gap-3">
@@ -34,15 +45,16 @@ function Sidebar() {
 
       <div className="mt-auto flex flex-col gap-1">
         <SidebarItem icon={<CircleHelp size={18} />} text="Help Center" />
-        <SidebarItem icon={<LogOut size={18} />} text="Log Out" />
+        <SidebarItem icon={<LogOut size={18} />} text="Log Out" onClick={logout} />
       </div>
     </aside>
   );
 }
 
-function SidebarItem({ icon, text, active }) {
+function SidebarItem({ icon, text, active, onClick, }) {
   return (
     <button
+      onClick={onClick}
       className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-lg transition-all duration-150 text-sm font-medium ${
         active
           ? "bg-indigo-700 text-white shadow-md scale-[0.97] translate-x-0.5 opacity-90"
