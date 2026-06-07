@@ -1,15 +1,10 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
 import { getTasks,createTask,updateTaskService,deleteTaskService,toggleTaskService, } from "../services/taskService";
 
-export const useTasks = () => {
+export const useTasks = (user) => {
   const [tasks, setTasks] = useState([]);
 
     const fetchTasks = async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   if (!user) return;
 
   const { data, error } = await getTasks(user.id);
@@ -61,9 +56,6 @@ const toggleTask = async (id) => {
 };
 
 const addTask = async (taskData) => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   if (!user) return;
 

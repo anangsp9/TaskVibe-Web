@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./lib/supabase";
 import { LayoutList, CalendarDays, Calendar } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
@@ -12,8 +11,17 @@ import { useTasks } from "./hooks/useTasks";
 import { useAuth } from "./hooks/useAuth";
 
 function App() {
-  const { tasks, setTasks, fetchTasks, deleteTask, toggleTask, addTask, updateTask, } = useTasks();
   const { user, loading } = useAuth();
+
+const {
+  tasks,
+  setTasks,
+  fetchTasks,
+  deleteTask,
+  toggleTask,
+  addTask,
+  updateTask,
+} = useTasks(user);
 
   const remaining = tasks.filter((t) => !t.completed).length;
 
