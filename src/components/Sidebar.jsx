@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import GhostLogo from "./GhostLogo";
 
 function Sidebar({activeFilter, isOpen, onClose,}) {
 
@@ -62,8 +63,8 @@ function Sidebar({activeFilter, isOpen, onClose,}) {
       >
       <div className="mb-8 flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center text-white font-bold text-lg">
-            T
+          <div className="w-10 h-12 flex items-center justify-center">
+            <GhostLogo size={40} />
           </div>
 
           <div>
