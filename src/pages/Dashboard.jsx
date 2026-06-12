@@ -25,6 +25,7 @@ const {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingTask, setEditingTask] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -81,7 +82,7 @@ const filteredTasks = useMemo(() => {
 
   return (
     <div className="flex min-h-screen bg-[#f9f9ff] overflow-x-hidden">
-      <Sidebar activeFilter={activeFilter} />
+      <Sidebar activeFilter={activeFilter} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-[#f9f9ff]">
         <Header
@@ -89,6 +90,7 @@ const filteredTasks = useMemo(() => {
         user={user}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        onMenuClick={() => setIsSidebarOpen(true)}
         />
 
         <div className="flex-1 pt-24 px-4 md:px-10 pb-24 md:pb-8 flex justify-center w-full">
