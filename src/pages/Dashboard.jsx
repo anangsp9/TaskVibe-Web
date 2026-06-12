@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { LayoutList, CalendarDays, Calendar } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -23,6 +23,7 @@ const {
 } = useTasks(user);
   const remaining = tasks.filter((t) => !t.completed).length;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingTask, setEditingTask] = useState(null);
   const location = useLocation();
 
@@ -43,38 +44,51 @@ useEffect(() => {
 
 const today = new Date().toISOString().split("T")[0];
 
-const filteredTasks = tasks.filter((task) => {
-  switch (activeFilter) {
-    case "all":
-      return true;
+const filteredTasks = useMemo(() => {
+  return tasks.filter((task) => {
+    const matchesFilter = (() => {
+      switch (activeFilter) {
+        case "today":
+          return task.dueDate === today && !task.completed;
 
-    case "today":
-      return (
-        task.dueDate === today &&
-        !task.completed
-      );
+        case "upcoming":
+          return (
+            Boolean(task.dueDate) &&
+            task.dueDate > today &&
+            !task.completed
+          );
 
-    case "upcoming":
-      return (
-        task.dueDate &&
-        task.dueDate > today &&
-        !task.completed
-      );
+        case "completed":
+          return task.completed;
 
-    case "completed":
-      return task.completed;
+        case "all":
+        default:
+          return true;
+      }
+    })();
 
-    default:
-      return true;
-  }
-});
+    const keyword = searchTerm.trim().toLowerCase();
+
+    const matchesSearch =
+      keyword === "" ||
+      (task.title || "").toLowerCase().includes(keyword) ||
+      (task.category || "").toLowerCase().includes(keyword);
+
+    return matchesFilter && matchesSearch;
+  });
+}, [tasks, activeFilter, today, searchTerm]);
 
   return (
     <div className="flex min-h-screen bg-[#f9f9ff] overflow-x-hidden">
       <Sidebar activeFilter={activeFilter} />
 
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-[#f9f9ff]">
-        <Header onOpenModal={() => setIsModalOpen(true)} user={user} />
+        <Header
+        onOpenModal={() => setIsModalOpen(true)}
+        user={user}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        />
 
         <div className="flex-1 pt-24 px-4 md:px-10 pb-8 flex justify-center w-full">
           <div className="w-full max-w-[800px] flex flex-col gap-6">
@@ -102,22 +116,27 @@ const filteredTasks = tasks.filter((task) => {
 
             {/* Task list */}
             <div className="flex flex-col gap-3">
-              {filteredTasks.map((task) => (
+            {filteredTasks.length > 0 ? (
+                filteredTasks.map((task) => (
                 <TaskItem
-  key={task.id}
-  task={task}
-  formatDueDate={formatDueDate}
-  toggleTask={toggleTask}
-  onDelete={deleteTask}
-  onEdit={(task) => {
-    setEditingTask(task);
-    setIsModalOpen(true);
-  }}
-/>
+                    key={task.id}
+                    task={task}
+                    formatDueDate={formatDueDate}
+                    toggleTask={toggleTask}
+                    onDelete={deleteTask}
+                    onEdit={(task) => {
+                    setEditingTask(task);
+                    setIsModalOpen(true);
+                    }}
+                />
+                ))
+            ) : (
+                <div className="py-10 text-center text-gray-400 text-sm">
+                No tasks found.
+                </div>
+            )}
 
-              ))}
-
-              <QuickAdd addTask={addTask} />
+            <QuickAdd addTask={addTask} />
             </div>
           </div>
         </div>

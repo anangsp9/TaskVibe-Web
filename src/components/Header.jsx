@@ -1,6 +1,6 @@
 import { Bell, Settings, Search, Plus } from "lucide-react";
 
-function Header({ onOpenModal, user }) {
+function Header({ onOpenModal, user, searchTerm, onSearchChange, }) {
   return (
     <header className="fixed top-0 left-0 md:left-64 right-0 z-40 flex justify-between items-center px-4 md:px-8 lg:px-10 h-16 bg-white border-b border-gray-200">
 
@@ -15,6 +15,8 @@ function Header({ onOpenModal, user }) {
           <input
             type="text"
             placeholder="Search tasks..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
             className="w-full bg-[#f1f3ff] border-none rounded-full py-2 pl-10 pr-4 text-sm text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           />
         </div>
