@@ -18,10 +18,7 @@ function Sidebar({activeFilter}) {
 
       if (error) {
         console.error(error);
-        return;
       }
-
-      navigate("/", { replace: true });
     };
 
   return (
