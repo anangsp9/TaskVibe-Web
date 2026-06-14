@@ -39,9 +39,26 @@ export default function Login() {
 
   return (
     <StyledWrapper>
-      <div className="login-page">
+      <div
+        className="
+    min-h-dvh
+    flex
+    items-center
+    justify-center
+    px-4
+    py-6
+    overflow-hidden
+  "
+        style={{
+          background: `
+      radial-gradient(circle at top left, rgba(99,102,241,0.12), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(79,70,229,0.1), transparent 30%),
+      #f9f9ff
+    `,
+        }}
+      >
         <motion.div
-          className="wrapper"
+          className="wrapper w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px]"
           initial={{ opacity: 0, y: 25, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{
@@ -140,27 +157,6 @@ export default function Login() {
 }
 
 const StyledWrapper = styled.div`
-  .login-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-      radial-gradient(
-        circle at top left,
-        rgba(99, 102, 241, 0.12),
-        transparent 30%
-      ),
-      radial-gradient(
-        circle at bottom right,
-        rgba(79, 70, 229, 0.1),
-        transparent 30%
-      ),
-      #f9f9ff;
-    padding: 20px;
-    overflow: hidden;
-  }
-
   .wrapper {
     --input-focus: #4f46e5;
     --font-color: #323232;
@@ -170,10 +166,10 @@ const StyledWrapper = styled.div`
   }
 
   .card-switch {
-    width: 360px;
-    height: 520px; /* sebelumnya 460px */
+    width: 100%;
+    height: 520px;
     position: relative;
-    padding-top: 60px; /* ruang untuk switch */
+    padding-top: 60px;
     box-sizing: border-box;
   }
 
@@ -266,7 +262,7 @@ const StyledWrapper = styled.div`
   .flip-card__inner {
     position: relative;
     top: 0;
-    width: 360px;
+    width: 100%;
     height: 430px;
     text-align: center;
     transition: transform 0.7s ease;
