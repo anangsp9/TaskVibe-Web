@@ -187,28 +187,34 @@ const StyledWrapper = styled.div`
   }
 
   .card-side::before {
-    position: absolute;
-    content: "Log in";
-    left: 50px;
-    top: -10px;
-    width: 100px;
-    text-decoration: underline;
-    color: var(--font-color);
-    font-weight: 700;
-    font-size: 15px;
-  }
+  position: absolute;
+  content: "Log in";
+  left: 20%;
+  top: -10px;
+  width: fit-content;
+
+  text-decoration: underline;
+  color: var(--font-color);
+  font-weight: 700;
+  font-size: 15px;
+
+  transition: all 0.3s ease;
+}
 
   .card-side::after {
-    position: absolute;
-    content: "Sign up";
-    right: 40px;
-    top: -10px;
-    width: 100px;
-    text-decoration: none;
-    color: var(--font-color);
-    font-weight: 700;
-    font-size: 15px;
-  }
+  position: absolute;
+  content: "Sign up";
+  right: 20%;
+  top: -10px;
+  width: fit-content;
+
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: 700;
+  font-size: 15px;
+
+  transition: all 0.3s ease;
+}
 
   .toggle:checked ~ .card-side::before {
     text-decoration: none;
@@ -379,4 +385,30 @@ const StyledWrapper = styled.div`
   .flip-card__btn:active {
     transform: scale(0.98);
   }
+
+  @media (max-width: 360px) {
+  .card-side::before {
+    left: 13%;
+    font-size: 14px;
+  }
+
+  .card-side::after {
+    right: 13%;
+    font-size: 14px;
+  }
+
+  .slider {
+    width: 44px;
+    height: 18px;
+  }
+
+  .slider::before {
+    width: 18px;
+    height: 18px;
+  }
+
+  .toggle:checked + .slider::before {
+    transform: translateX(26px);
+  }
+}
 `;
