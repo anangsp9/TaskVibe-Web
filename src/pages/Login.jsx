@@ -1,40 +1,56 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabase";
+import { loginUser, registerUser } from "../services/authService";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const signUp = async () => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    if (error) {
-      alert(error.message);
-      return;
+    try {
+      setLoading(true);
+
+      const { error } = await loginUser(email, password);
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      navigate("/", { replace: true });
+    } catch (err) {
+      toast.error(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
     }
-
-    alert("Account created!");
   };
 
-  const login = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  const handleSignUp = async (e) => {
+    e.preventDefault();
 
-    if (error) {
-      alert(error.message);
-      return;
+    try {
+      setLoading(true);
+
+      const { error } = await registerUser(email, password);
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success("Account created! Check your email.");
+    } catch (err) {
+      toast.error(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
     }
-
-    navigate("/", { replace: true });
   };
 
   return (
@@ -67,88 +83,94 @@ export default function Login() {
           }}
         >
           <div className="card-switch">
-            <label className="switch">
-              <input type="checkbox" className="toggle" />
+            <input id="auth-toggle" type="checkbox" className="toggle" />
+            <label htmlFor="auth-toggle" className="switch">
               <span className="slider" />
               <span className="card-side" />
-
-              <div className="flip-card__inner">
-                {/* Front - Login */}
-                <div className="flip-card__front">
-                  <div className="title">Log In</div>
-
-                  <form
-                    className="flip-card__form"
-                    onSubmit={(e) => e.preventDefault()}
-                  >
-                    <input
-                      className="flip-card__input"
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <input
-                      className="flip-card__input"
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    <button
-                      type="button"
-                      className="flip-card__btn"
-                      onClick={login}
-                    >
-                      Log In
-                    </button>
-                  </form>
-                </div>
-
-                {/* Back - Sign Up */}
-                <div className="flip-card__back">
-                  <div className="title">Sign Up</div>
-
-                  <form
-                    className="flip-card__form"
-                    onSubmit={(e) => e.preventDefault()}
-                  >
-                    <input
-                      className="flip-card__input"
-                      type="text"
-                      placeholder="Name (Coming Soon)"
-                      disabled
-                    />
-
-                    <input
-                      className="flip-card__input"
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <input
-                      className="flip-card__input"
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    <button
-                      type="button"
-                      className="flip-card__btn"
-                      onClick={signUp}
-                    >
-                      Sign Up
-                    </button>
-                  </form>
-                </div>
-              </div>
             </label>
+
+            <div className="flip-card__inner">
+              {/* Front - Login */}
+              <div className="flip-card__front">
+                <div className="title">Log In</div>
+
+                <form className="flip-card__form" onSubmit={handleLogin}>
+                  <input
+                    className="flip-card__input"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    disabled={loading}
+                  />
+
+                  <input
+                    className="flip-card__input"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="submit"
+                    className="flip-card__btn"
+                    disabled={loading}
+                  >
+                    {loading ? "Loading..." : "Log In"}
+                  </button>
+                </form>
+              </div>
+
+              {/* Back - Sign Up */}
+              <div className="flip-card__back">
+                <div className="title">Sign Up</div>
+
+                <form className="flip-card__form" onSubmit={handleSignUp}>
+                  <input
+                    className="flip-card__input"
+                    type="text"
+                    placeholder="Name (Coming Soon)"
+                    disabled
+                  />
+
+                  <input
+                    className="flip-card__input"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    disabled={loading}
+                  />
+
+                  <input
+                    className="flip-card__input"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="new-password"
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="submit"
+                    className="flip-card__btn"
+                    disabled={loading}
+                  >
+                    {loading ? "Loading..." : "Sign Up"}
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -175,9 +197,9 @@ const StyledWrapper = styled.div`
 
   .switch {
     position: relative;
-    width: 100%;
-    height: 100%;
     display: block;
+    width: 100%;
+    height: 30px;
   }
 
   .toggle {
@@ -187,40 +209,40 @@ const StyledWrapper = styled.div`
   }
 
   .card-side::before {
-  position: absolute;
-  content: "Log in";
-  left: 20%;
-  top: -10px;
-  width: fit-content;
+    position: absolute;
+    content: "Log in";
+    left: 20%;
+    top: -10px;
+    width: fit-content;
 
-  text-decoration: underline;
-  color: var(--font-color);
-  font-weight: 700;
-  font-size: 15px;
+    text-decoration: underline;
+    color: var(--font-color);
+    font-weight: 700;
+    font-size: 15px;
 
-  transition: all 0.3s ease;
-}
+    transition: all 0.3s ease;
+  }
 
   .card-side::after {
-  position: absolute;
-  content: "Sign up";
-  right: 20%;
-  top: -10px;
-  width: fit-content;
+    position: absolute;
+    content: "Sign up";
+    right: 20%;
+    top: -10px;
+    width: fit-content;
 
-  text-decoration: none;
-  color: var(--font-color);
-  font-weight: 700;
-  font-size: 15px;
+    text-decoration: none;
+    color: var(--font-color);
+    font-weight: 700;
+    font-size: 15px;
 
-  transition: all 0.3s ease;
-}
+    transition: all 0.3s ease;
+  }
 
-  .toggle:checked ~ .card-side::before {
+  .toggle:checked + .switch .card-side::before {
     text-decoration: none;
   }
 
-  .toggle:checked ~ .card-side::after {
+  .toggle:checked + .switch .card-side::after {
     text-decoration: underline;
   }
 
@@ -255,11 +277,11 @@ const StyledWrapper = styled.div`
     transition: 0.3s;
   }
 
-  .toggle:checked + .slider {
+  .toggle:checked + .switch .slider {
     background: var(--input-focus);
   }
 
-  .toggle:checked + .slider::before {
+  .toggle:checked + .switch .slider::before {
     transform: translateX(30px);
   }
 
@@ -387,28 +409,40 @@ const StyledWrapper = styled.div`
   }
 
   @media (max-width: 360px) {
-  .card-side::before {
-    left: 13%;
-    font-size: 14px;
+    .card-side::before {
+      left: 13%;
+      font-size: 14px;
+    }
+
+    .card-side::after {
+      right: 13%;
+      font-size: 14px;
+    }
+
+    .slider {
+      width: 44px;
+      height: 18px;
+    }
+
+    .slider::before {
+      width: 18px;
+      height: 18px;
+    }
+
+    .toggle:checked + .slider::before {
+      transform: translateX(26px);
+    }
   }
 
-  .card-side::after {
-    right: 13%;
-    font-size: 14px;
+  .flip-card__btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 
-  .slider {
-    width: 44px;
-    height: 18px;
+  .flip-card__btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
   }
-
-  .slider::before {
-    width: 18px;
-    height: 18px;
-  }
-
-  .toggle:checked + .slider::before {
-    transform: translateX(26px);
-  }
-}
 `;
