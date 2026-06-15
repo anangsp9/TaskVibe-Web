@@ -6,8 +6,15 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginForm, setLoginForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [signUpForm, setSignUpForm] = useState({
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -17,7 +24,7 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const { error } = await loginUser(email, password);
+      const { error } = await loginUser(loginForm.email, loginForm.password);
 
       if (error) {
         toast.error(error.message);
@@ -38,7 +45,10 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const { error } = await registerUser(email, password);
+      const { error } = await registerUser(
+        signUpForm.email,
+        signUpForm.password,
+      );
 
       if (error) {
         toast.error(error.message);
@@ -99,8 +109,13 @@ export default function Login() {
                     className="flip-card__input"
                     type="email"
                     placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={loginForm.email}
+                    onChange={(e) =>
+                      setLoginForm({
+                        ...loginForm,
+                        email: e.target.value,
+                      })
+                    }
                     required
                     autoComplete="email"
                     disabled={loading}
@@ -110,8 +125,13 @@ export default function Login() {
                     className="flip-card__input"
                     type="password"
                     placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={loginForm.password}
+                    onChange={(e) =>
+                      setLoginForm({
+                        ...loginForm,
+                        password: e.target.value,
+                      })
+                    }
                     required
                     autoComplete="current-password"
                     disabled={loading}
@@ -143,8 +163,13 @@ export default function Login() {
                     className="flip-card__input"
                     type="email"
                     placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={signUpForm.email}
+                    onChange={(e) =>
+                      setSignUpForm({
+                        ...signUpForm,
+                        email: e.target.value,
+                      })
+                    }
                     required
                     autoComplete="email"
                     disabled={loading}
@@ -154,8 +179,13 @@ export default function Login() {
                     className="flip-card__input"
                     type="password"
                     placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={signUpForm.password}
+                    onChange={(e) =>
+                      setSignUpForm({
+                        ...signUpForm,
+                        password: e.target.value,
+                      })
+                    }
                     required
                     autoComplete="new-password"
                     disabled={loading}
@@ -177,5 +207,3 @@ export default function Login() {
     </StyledWrapper>
   );
 }
-
-
