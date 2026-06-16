@@ -1,9 +1,32 @@
-import { Bell, Settings, Search, Plus, Menu } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Bell, Settings, Search, Menu } from "lucide-react";
+import AddTaskButton from "./AddTaskButton";
 
-function Header({ onOpenModal, user, searchTerm, onSearchChange, onMenuClick, }) {
+function Header({
+  onOpenModal,
+  user,
+  searchTerm,
+  onSearchChange,
+  onMenuClick,
+}) {
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 md:left-64 right-0 z-40 flex justify-between items-center px-4 md:px-8 lg:px-10 h-16 bg-white border-b border-gray-200">
-
       {/* Mobile Hamburger */}
       <button
         onClick={onMenuClick}
@@ -40,33 +63,60 @@ function Header({ onOpenModal, user, searchTerm, onSearchChange, onMenuClick, })
       </div>
 
       {/* Right section */}
-      <div className="flex items-center gap-4 ml-auto">
+      <div className="flex items-center gap-2 md:gap-3 lg:gap-4 ml-3 md:ml-4 lg:ml-6">
+        <div className="hidden md:block">
+          <AddTaskButton
+            onClick={onOpenModal}
+            className="px-3 py-2 lg:px-4 lg:py-2 text-xs lg:text-sm"
+          />
+        </div>
 
-        <button
-          onClick={onOpenModal}
-          className="hidden md:flex items-center gap-2 bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-800 transition"
-        >
-          <Plus size={16} />
-          Add Task
-        </button>
-
-        <button className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+        <button className="hidden lg:flex text-gray-500 hover:bg-gray-100 p-2 rounded-full">
           <Bell size={20} />
         </button>
 
-        <button className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+        <button className="hidden lg:flex text-gray-500 hover:bg-gray-100 p-2 rounded-full">
           <Settings size={20} />
         </button>
 
-        <span className="hidden md:block text-sm font-medium text-gray-700">
-        {user?.email?.split("@")[0]}
+        <span className="hidden lg:block text-sm font-semibold text-gray-500">
+          {user?.email?.split("@")[0]}
         </span>
 
-        <img
-          src="https://i.pravatar.cc/100"
-          alt="profile"
-          className="w-8 h-8 rounded-full border border-gray-200 object-cover"
-        />
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setShowUserMenu((prev) => !prev)}
+            className="focus:outline-none"
+          >
+            <img
+              src="https://i.pravatar.cc/100"
+              alt="profile"
+              className="w-8 h-8 rounded-full border border-gray-200 object-cover cursor-pointer"
+            />
+          </button>
+
+          {/* Dropdown User Profile */}
+          {showUserMenu && (
+            <div className="absolute right-0 top-12 w-52 bg-white rounded-xl shadow-lg border border-gray-200 py-2 lg:hidden z-50">
+              <div className="px-4 py-2 border-b border-gray-100">
+                <p className="text-xs text-gray-500">Signed in as</p>
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {user?.email?.split("@")[0]}
+                </p>
+              </div>
+
+              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                <Bell size={18} />
+                Notifications
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                <Settings size={18} />
+                Settings
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
