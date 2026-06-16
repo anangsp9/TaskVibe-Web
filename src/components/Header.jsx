@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Bell, Settings, Search, Menu } from "lucide-react";
 import AddTaskButton from "./AddTaskButton";
+import ShinyText from "./ShinyText";
 
 function Header({
   onOpenModal,
@@ -79,9 +80,19 @@ function Header({
           <Settings size={20} />
         </button>
 
-        <span className="hidden lg:block text-sm font-semibold text-gray-500">
-          {user?.email?.split("@")[0]}
-        </span>
+        <div className="hidden lg:flex items-center">
+          <ShinyText
+            text={`✨ ${user?.email?.split("@")[0] || "User"}`}
+            speed={2}
+            delay={1}
+            color="#6b7280"
+            shineColor="#ffffff"
+            spread={110}
+            direction="left"
+            pauseOnHover={true}
+            className="text-sm font-semibold"
+          />
+        </div>
 
         <div className="relative" ref={menuRef}>
           <button
@@ -100,9 +111,19 @@ function Header({
             <div className="absolute right-0 top-12 w-52 bg-white rounded-xl shadow-lg border border-gray-200 py-2 lg:hidden z-50">
               <div className="px-4 py-2 border-b border-gray-100">
                 <p className="text-xs text-gray-500">Signed in as</p>
-                <p className="text-sm font-medium text-gray-800 truncate">
-                  {user?.email?.split("@")[0]}
-                </p>
+                <div className="truncate">
+                  <ShinyText
+                    text={user?.email?.split("@")[0] || "User"}
+                    speed={2}
+                    delay={1}
+                    color="#1f2937"
+                    shineColor="#ffffff"
+                    spread={110}
+                    direction="left"
+                    pauseOnHover={true}
+                    className="text-sm font-medium"
+                  />
+                </div>
               </div>
 
               <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
