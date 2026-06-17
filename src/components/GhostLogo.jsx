@@ -101,7 +101,7 @@ const StyledWrapper = styled.div`
   #st3,
   #st4,
   #st5 {
-    background-color: red;
+    background-color: #06B6D4;
   }
 
   #top0 {
@@ -231,7 +231,7 @@ const StyledWrapper = styled.div`
   @keyframes flicker0 {
     0%,
     49% {
-      background-color: red;
+      background-color: #06B6D4;
     }
     50%,
     100% {
@@ -246,7 +246,7 @@ const StyledWrapper = styled.div`
     }
     50%,
     100% {
-      background-color: red;
+      background-color: #06B6D4;
     }
   }
 

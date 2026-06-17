@@ -123,3 +123,20 @@ body,
   width: 100%;
   overflow-x: hidden;
 }
+
+@font-face {
+  font-family: "ComicSansCustom";
+  src: url("./assets/fonts/Comic\ Sans\ MS.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.pixel-logo {
+  font-family: "ComicSansCustom";
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+
+  text-shadow:
+    2px 0 0 currentColor,
+    0 2px 0 currentColor;
+}
