@@ -16,6 +16,7 @@ import { useTasks } from "../hooks/useTasks";
 import { useAuth } from "../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import TextType from "../components/TextType";
 
 function Dashboard() {
   const { user } = useAuth();
@@ -56,6 +57,27 @@ function Dashboard() {
         : currentHour < 20
           ? "🌇"
           : "🌙";
+
+  const greetingTagline =
+    currentHour < 12
+      ? [
+          "Start your day with clear goals.",
+          "Every task completed is progress.",
+        ]
+      : currentHour < 17
+        ? [
+            "Stay focused and make today count.",
+            "Small steps lead to big results.",
+          ]
+        : currentHour < 20
+          ? [
+              "Wrap up your tasks with confidence.",
+              "You're closer than you think.",
+            ]
+          : [
+              "Time to finish what's left today.",
+              "Prepare for a productive tomorrow.",
+            ];
 
   const todayText = now.toLocaleDateString("en-GB", {
     weekday: "long",
@@ -137,7 +159,19 @@ function Dashboard() {
         <div className="flex-1 pt-24 px-4 md:px-10 pb-24 md:pb-8 flex justify-center w-full">
           <div className="w-full max-w-[800px] flex flex-col gap-6">
             {/* Page header */}
-            <div className="flex items-end justify-between border-b border-gray-200 pb-5">
+            <div
+              className="
+  flex
+  flex-col
+  min-[360px]:flex-row
+  min-[360px]:items-end
+  min-[360px]:justify-between
+  gap-4
+  border-b
+  border-gray-200
+  pb-5
+"
+            >
               <div className="flex flex-col gap-2">
                 <div>
                   <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
@@ -145,7 +179,34 @@ function Dashboard() {
                     <span className="inline-block">{greetingEmoji}</span>
                   </h2>
 
-                  <p className="text-base text-gray-400 mt-1">{todayText}</p>
+                  {/* TextType dengan placeholder agar layout stabil */}
+                  <div className="relative mt-1 min-h-[28px] md:min-h-[32px]">
+                    {/* Placeholder invisible untuk reservasi ruang */}
+                    <p className="invisible text-sm md:text-base font-medium whitespace-nowrap">
+                      Wrap up your tasks with confidence.
+                    </p>
+
+                    {/* Animated text */}
+                    <div className="absolute inset-0 items-center">
+                      <TextType
+                        as="p"
+                        text={greetingTagline}
+                        typingSpeed={75}
+                        initialDelay={500}
+                        pauseDuration={2500}
+                        showCursor={true}
+                        cursorCharacter="_"
+                        deletingSpeed={50}
+                        variableSpeedEnabled={false}
+                        variableSpeedMin={60}
+                        variableSpeedMax={120}
+                        cursorBlinkDuration={0.5}
+                        className="text-sm md:text-base font-medium text-gray-600"
+                      />
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-gray-400 mt-1">{todayText}</p>
                 </div>
 
                 <div className="mt-2 w-full max-w-[280px]">
@@ -181,7 +242,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="text-xs font-semibold text-indigo-700 bg-[#e2dfff] px-3 py-1 rounded-full">
+              <div className="self-start min-[360px]:self-auto text-xs font-semibold text-indigo-700 bg-[#e2dfff] px-3 py-1 rounded-full whitespace-nowrap">
                 {remaining} Task{remaining !== 1 ? "s" : ""} Left
               </div>
             </div>
