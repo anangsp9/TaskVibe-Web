@@ -64,9 +64,9 @@ function TaskItem({
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-2">
+        <div className="flex items-start flex-col gap-2">
           <span
-            className={`text-[15px] font-medium ${
+            className={`text-[15px] font-medium break-all ${
               task.completed
                 ? "line-through text-gray-400"
                 : "text-gray-800"
