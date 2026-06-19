@@ -11,6 +11,7 @@ import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 import GhostLogo from "./GhostLogo";
 import Shuffle from "./Shuffle";
+import toast from "react-hot-toast";
 
 function Sidebar({ activeFilter, isOpen, onClose }) {
   const navigate = useNavigate();
@@ -21,6 +22,15 @@ function Sidebar({ activeFilter, isOpen, onClose }) {
     if (error) {
       console.error(error);
     }
+  };
+
+  const showComingSoon = (feature) => {
+    toast(
+      `${feature} is currently under development and will be available soon.`,
+      {
+        icon: "🚧",
+      },
+    );
   };
 
   return (
@@ -102,7 +112,10 @@ function Sidebar({ activeFilter, isOpen, onClose }) {
           </button>
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 bg-indigo-700 text-white text-sm font-medium py-2.5 rounded-lg hover:bg-indigo-800 transition-colors duration-150 mb-4 shadow-md">
+        <button
+          onClick={() => showComingSoon("New Project Feature")}
+          className="w-full flex items-center justify-center gap-2 bg-indigo-700 text-white text-sm font-medium py-2.5 rounded-lg hover:bg-indigo-800 transition-colors duration-150 mb-4 shadow-md"
+        >
           <Plus size={16} />
           New Project
         </button>
@@ -150,7 +163,11 @@ function Sidebar({ activeFilter, isOpen, onClose }) {
         </nav>
 
         <div className="mt-auto flex flex-col gap-1">
-          <SidebarItem icon={<CircleHelp size={18} />} text="Help Center" />
+          <SidebarItem
+            icon={<CircleHelp size={18} />}
+            text="Help Center"
+            onClick={() => showComingSoon("Help Center")}
+          />
           <SidebarItem
             icon={<LogOut size={18} />}
             text="Log Out"
