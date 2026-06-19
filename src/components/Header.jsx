@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Bell, Settings, Search, Menu } from "lucide-react";
 import AddTaskButton from "./AddTaskButton";
 import ShinyText from "./ShinyText";
+import toast from "react-hot-toast";
 
 function Header({
   onOpenModal,
@@ -25,6 +26,15 @@ function Header({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const showComingSoon = (feature) => {
+    toast(
+      `${feature} is currently under development and will be available soon.`,
+      {
+        icon: "🚧",
+      },
+    );
+  };
 
   return (
     <header className="fixed top-0 left-0 md:left-64 right-0 z-40 flex justify-between items-center px-4 md:px-8 lg:px-10 h-16 bg-white border-b border-gray-200">
@@ -72,11 +82,17 @@ function Header({
           />
         </div>
 
-        <button className="hidden lg:flex text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+        <button
+          onClick={() => showComingSoon("Notifications")}
+          className="hidden lg:flex text-gray-500 hover:bg-gray-100 p-2 rounded-full"
+        >
           <Bell size={20} />
         </button>
 
-        <button className="hidden lg:flex text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+        <button
+          onClick={() => showComingSoon("Settings")}
+          className="hidden lg:flex text-gray-500 hover:bg-gray-100 p-2 rounded-full"
+        >
           <Settings size={20} />
         </button>
 
@@ -126,12 +142,18 @@ function Header({
                 </div>
               </div>
 
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+              <button
+                onClick={() => showComingSoon("Notifications")}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+              >
                 <Bell size={18} />
                 Notifications
               </button>
 
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+              <button
+                onClick={() => showComingSoon("Settings")}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+              >
                 <Settings size={18} />
                 Settings
               </button>
