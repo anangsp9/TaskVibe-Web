@@ -26,6 +26,9 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/tasks/:filter" element={<Dashboard />} />
       </Route>
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
