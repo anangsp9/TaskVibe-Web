@@ -105,7 +105,7 @@ function Dashboard() {
     }
   }, [user, setTasks]);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA");
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
